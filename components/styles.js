@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+const {height} = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -7,7 +7,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     alignItems:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    height: height,
+  },
+  scrollview:{
+    alignItems:'center',
+    justifyContent:'center',
+    
   },
   categoryContainer: {
     marginBottom: 30,

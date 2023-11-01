@@ -31,7 +31,8 @@ function CategoriesScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle = {styles.scrollview}>
+      
       {data.map((item) => (
         <TouchableOpacity
           key={item.id}
@@ -46,6 +47,7 @@ function CategoriesScreen() {
          
         </TouchableOpacity>
       ))}
+     
     </ScrollView>
   );
 }
