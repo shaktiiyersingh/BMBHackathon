@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView,View, Image, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import db from './firebase';
@@ -31,7 +31,7 @@ function CategoriesScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {data.map((item) => (
         <TouchableOpacity
           key={item.id}
@@ -43,9 +43,10 @@ function CategoriesScreen() {
             style={styles.categoryImage}
           />
           <Text style={styles.categoryText}>{item.categoryName}</Text>
+         
         </TouchableOpacity>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
