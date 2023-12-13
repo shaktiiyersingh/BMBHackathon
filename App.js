@@ -10,7 +10,7 @@ import ProductDisplay from './src/components/ProductDisplay/ProductDisplay';
 import CartDisplay from './src/components/CartDisplay/CartDisplay';
 import Inventory from "./src/components/Inventry/Inventry";
 import Payment from './src/components/Payment/Payment';
-
+import OrderStatus from "./src/components/Payment/OrderStatus";
 
 import {CartProvider} from './src/context/CartContext'
 
@@ -26,7 +26,7 @@ export default () => {
                         component = {Login}
                         options = {
                             {
-                                headerTitle: () => <Header name = "Authenticate" showCartIcon={false} />,
+                                headerTitle: () => <Header name = "Login" showCartIcon={false} />,
                                 headerStyle: {
                                     height: 90,
                                     borderBottomLeftRadius: 20,
@@ -136,6 +136,25 @@ export default () => {
                         options = {
                             {
                                 headerTitle: () => <Header name = "Payment" />,
+                                headerStyle: {
+                                    height: 90,
+                                    borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20,
+                                    backgroundColor: '#00e4d0',
+                                    shadowColor: '#000',
+                                    elevation: 25
+                                }
+                            }
+                        }
+                    />
+                    
+                    <Stack.Screen 
+                        name = "OrderStatus"
+                        component = {OrderStatus}
+                        options = {
+                            {
+                                headerLeft: () => null,
+                                headerTitle: () => <Header name = "OrderStatus" />,
                                 headerStyle: {
                                     height: 90,
                                     borderBottomLeftRadius: 20,

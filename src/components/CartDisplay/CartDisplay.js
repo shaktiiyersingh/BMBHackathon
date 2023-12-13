@@ -63,27 +63,10 @@ const CartScreen = () => {
   // check out 
   const handleCheckout = async () => {
     if (calculateOverallTotal() > 0) 
-    {
-      try {
-        const userId = getCurrentUserId();
-        const orderDocRef = await firebase.firestore().collection('orders').add({
-          userId,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          items: cartItems,
-          orderStatus: 'pending',
-        });
+      navigation.navigate('Payment');
 
-        clearCart();
-        
-        Alert.alert('Order placed successfully!');
-        navigation.navigate('Payment');
-      } catch (error) {
-        console.error('Error placing order:', error);
-      }
-    } 
     else
       Alert.alert('Your cart is empty. Add items before checking out.');
-    
   };
 
   return (

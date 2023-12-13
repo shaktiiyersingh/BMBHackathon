@@ -100,9 +100,10 @@ const Inventory = () => {
                   <Text style={styles.itemName}>Name: {item.name}</Text>
                   <Text style={styles.itemPrice}>Price: {item.price}</Text>
                   <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
-                  <Text style={styles.itemTotalPrice}>TotalPrice: $220</Text>
+                  <Text style={styles.itemQuantity}>Overall Price: {item.quantity * item.price}</Text>
                 </View>
               ))}
+              <Text style={styles.itemTotalPrice}>TotalPrice: {order.totalPrice}</Text>
             </View>
           ))}
         </ScrollView>
