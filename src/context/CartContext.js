@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { firebase } from '../configure/config'; 
 
+import { debounce } from 'lodash';
+
 const CartContext = createContext();
 
 export const useCart = () => {
@@ -111,6 +113,8 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  const debouncedAddToCart = debounce(addToCart, 250);
+
   const clearCart = () => {
     setCartItems([]);
     updateFirestoreCart([]);
@@ -118,7 +122,7 @@ export const CartProvider = ({ children }) => {
 
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, clearCart, setCartItems, getCurrentUserId }}>
+    <CartContext.Provider value={{ cartItems, addToCart: debouncedAddToCart, clearCart, setCartItems, getCurrentUserId }}>
       {children}
     </CartContext.Provider>
   );
