@@ -8,6 +8,8 @@ import Login from './src/components/Login/Login';
 import Dashboard from './src/components/DashBoard/Dashboard';
 import ProductDisplay from './src/components/ProductDisplay/ProductDisplay';
 import CartDisplay from './src/components/CartDisplay/CartDisplay';
+import Address from "./src/components/Address/Address";
+import AddAddress from "./src/components/Address/AddAddress";
 import Inventory from "./src/components/Inventry/Inventry";
 import Payment from './src/components/Payment/Payment';
 import OrderStatus from "./src/components/Payment/OrderStatus";
@@ -100,6 +102,42 @@ export default () => {
                         options = {
                             {
                                 headerTitle: () => <Header name = "Cart" showCartIcon={true} />,
+                                headerStyle: {
+                                    height: 90,
+                                    borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20,
+                                    backgroundColor: '#00e4d0',
+                                    shadowColor: '#000',
+                                    elevation: 25
+                                }
+                            }
+                        }
+                    />
+
+                    <Stack.Screen 
+                        name = "Address"
+                        component = {Address}
+                        options = {
+                            {
+                                headerTitle: () => <Header name = "Address" showCartIcon={true} />,
+                                headerStyle: {
+                                    height: 90,
+                                    borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20,
+                                    backgroundColor: '#00e4d0',
+                                    shadowColor: '#000',
+                                    elevation: 25
+                                }
+                            }
+                        }
+                    />
+
+                    <Stack.Screen 
+                        name = "AddAddress"
+                        component = {AddAddress}
+                        options = {
+                            {
+                                headerTitle: () => <Header name = "AddAddress" showCartIcon={true} />,
                                 headerStyle: {
                                     height: 90,
                                     borderBottomLeftRadius: 20,

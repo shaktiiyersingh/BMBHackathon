@@ -1,15 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView, Alert, ActivityIndicator, Dimensions } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCart } from '../../context/CartContext';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../configure/config';
 
 
+
 const CartScreen = () => {
   const { cartItems, clearCart, setCartItems, getCurrentUserId } = useCart();
+  
+  const [cancelItemLoading, setCancelItemLoading] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selectedAddress, setSelectedAddress] = useState('No Selected Address');
+
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
+
+  const getAddress = async () => {
+    const userDocRef = firebase.firestore().collection('users').doc(getCurrentUserId());
+    const userDoc = await userDocRef.get();
+    const getChoosenAddressId = await AsyncStorage.getItem("ADDRESS");
+
+    if(userDoc.data().address)
+    {
+      let tempDart = [];
+      tempDart = userDoc.data().address;
+      tempDart.map(item => {
+        if(item.addressId == getChoosenAddressId)
+          setSelectedAddress(
+            item.street + ", " +
+            item.city + ", " +
+            item.pincode + ", " +
+            item.mobile  
+          );
+      })
+    }
+  }
+
+  useEffect(() => {
+    getAddress();
+  }, [isFocused])
 
   useEffect(() => {
     setLoading(false);
@@ -28,11 +61,16 @@ const CartScreen = () => {
   // cancel one item in the cart
   const handleCancelItem = async (itemId) => {
     try {
+      setCancelItemLoading((prevLoading) => ({
+        ...prevLoading,
+        [itemId]: true,
+      }));
+
       const updatedCartItems = cartItems.filter((item) => item.id !== itemId);
-  
+
       const userId = getCurrentUserId();
       const cartDocRef = await firebase.firestore().collection('carts').where('userId', '==', userId).get();
-  
+
       if (!cartDocRef.empty) {
         const cartDoc = cartDocRef.docs[0];
         await cartDoc.ref.update({ items: updatedCartItems });
@@ -40,6 +78,11 @@ const CartScreen = () => {
       }
     } catch (error) {
       console.error('Error canceling item:', error);
+    } finally {
+      setCancelItemLoading((prevLoading) => ({
+        ...prevLoading,
+        [itemId]: false,
+      }));
     }
   };
   
@@ -61,10 +104,9 @@ const CartScreen = () => {
   };  
 
   // check out 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (calculateOverallTotal() > 0) 
-      navigation.navigate('Payment');
-
+      navigation.navigate('Payment', { selectedAddress });
     else
       Alert.alert('Your cart is empty. Add items before checking out.');
   };
@@ -91,26 +133,63 @@ const CartScreen = () => {
                 color="#e74c3c" 
                 style={styles.cancelBtn}
               />
+              {cancelItemLoading[item.id] && (
+                <ActivityIndicator size="small" color="#3498db" />
+              )}
             </View>
           ))}
           
           <Text style={styles.overallTotal}>Overall Total: ${calculateOverallTotal().toFixed(2)}</Text>
           
-          <Button title="Clear all" onPress={handleCancelAll} color="#c0392b" />
+          <View style={styles.address}>
+            <Text>Selected Address</Text>
+            <Text 
+              style={{
+                color: 'blue', 
+                textDecorationLine: 'underline'
+              }}
+              onPress={() => navigation.navigate('Address')}
+            >
+              Change Address
+            </Text>
+          </View>
+          <Text
+            style={{
+              width: '100%',
+              marginTop: 30,
+              marginBottom: 100,
+              fontSize: 13,
+              fontWeight: 'bold',
+              color: 'grey',
+            }}
+          >
+            {selectedAddress}
+          </Text>
 
-          <View style={{ marginTop: 16 }} />
+          <View style={styles.buttonContainer}>
+            <Button 
+              title="Clear all" 
+              onPress={handleCancelAll} 
+              color="#c0392b" 
+              disabled={calculateOverallTotal() === 0}
+            />
 
-          <Button 
-            title="Checkout" 
-            onPress={handleCheckout} 
-            style={styles.checkoutButton} 
-            disabled={calculateOverallTotal() === 0}
-          />
+            <View style={{ marginTop: 16 }} />
+
+            <Button 
+              title="Checkout" 
+              onPress={handleCheckout} 
+              style={styles.checkoutButton} 
+              disabled={calculateOverallTotal() === 0 || selectedAddress === 'No Selected Address'}
+            />
+          </View>
         </View>
       )}
     </ScrollView>
   );
 };
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -169,6 +248,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#e74c3c',
     borderRadius: 5,
     alignSelf: 'center',
+  },
+  address: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    marginTop: 20
   },
   checkoutButton: {
     marginTop: 16,

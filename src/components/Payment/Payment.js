@@ -6,7 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../configure/config';
 import RazorpayCheckout from 'react-native-razorpay';
 
-const PaymentScreen = () => {
+const PaymentScreen = ({ route }) => {
+
+  const { selectedAddress } = route.params;
   const { cartItems, getCurrentUserId, clearCart } = useCart();
   const navigation = useNavigation();
 
@@ -56,6 +58,7 @@ const PaymentScreen = () => {
           items: cartItems,
           totalPrice: calculateOverallTotal(),
           orderStatus: 'pending',
+          address: selectedAddress,
         });
 
         clearCart();

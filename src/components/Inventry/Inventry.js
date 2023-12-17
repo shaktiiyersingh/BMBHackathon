@@ -104,6 +104,7 @@ const Inventory = () => {
                 </View>
               ))}
               <Text style={styles.itemTotalPrice}>TotalPrice: {order.totalPrice}</Text>
+              <Text style={{}}>Address: {order.address}</Text>
             </View>
           ))}
         </ScrollView>
@@ -179,7 +180,8 @@ const styles = StyleSheet.create({
     color: 'green',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginBottom: 15,
     },
   });
   
