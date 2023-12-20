@@ -1,7 +1,10 @@
-import React, { useState }from 'react'
+import React, { useState, useEffect }from 'react'
 import { Text, View, Image, TouchableOpacity, TextInput, StyleSheet, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+
+import { updateStoredCredentials } from '../AutoLogin/authUtils';
 import { firebase } from '../../configure/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
     const navigation = useNavigation();
@@ -9,10 +12,29 @@ const Login = () => {
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
 
+    useEffect(() => {
+      retrieveStoredCredentials();
+    }, []);
+
+    const retrieveStoredCredentials = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('userEmail');
+        const storedPassword = await AsyncStorage.getItem('userPassword');
+
+        if (storedEmail && storedPassword) 
+
+          loginUser(storedEmail, storedPassword);
+        
+      } catch (error) {
+        console.error('Error retrieving stored credentials:', error);
+      }
+    };
+
     // login in user using email
     const loginUser = async (email, password) => {
       try{
         await firebase.auth().signInWithEmailAndPassword(email, password)
+        updateStoredCredentials(email, password);
         navigation.navigate('Dashboard');
       } 
       catch(error)

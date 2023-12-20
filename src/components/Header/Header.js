@@ -3,8 +3,8 @@ import { Text, View, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
+import { updateStoredCredentials } from '../AutoLogin/authUtils';
 import { firebase } from '../../configure/config';
-
 import { useCart } from '../../context/CartContext';
 
 const Header = (props) => 
@@ -20,6 +20,7 @@ const Header = (props) =>
       .auth()
       .signOut()
       .then(() => {
+        updateStoredCredentials(); 
         navigation.reset({
           index: 0,
           routes: [{ name: 'Login' }],

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { v4 } from 'uuid';
 
 import { firebase } from '../../configure/config';
 import { useCart } from '../../context/CartContext';
@@ -16,9 +15,19 @@ export default function AddAddress() {
 
   const navigation = useNavigation();
 
+
+  const generateUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };
+  
+
   const saveAddress = async () => {
 
-    const addressId = v4();
+    const addressId = generateUUID();
     const userId = getCurrentUserId();
     const userDocRef = firebase.firestore().collection('users').doc(userId);
   

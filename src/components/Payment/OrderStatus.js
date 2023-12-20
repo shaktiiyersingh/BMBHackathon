@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
+import { Text, StyleSheet, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import ConfettiCannon from 'react-native-confetti-cannon';
 
 const OrderStatus = ({ route }) => {
-  const { success } = route.params; 
+  const { success } = route.params;
   console.log(success);
   const navigation = useNavigation();
 
@@ -40,15 +40,22 @@ const OrderStatus = ({ route }) => {
     ];
 
     Animated.sequence(sequence).start(() => {
-      if (success) {
-        // Start confetti animation for 1.5 seconds after the other animations
+      if (success) 
+      {
         confettiRef.current.start();
         setTimeout(() => {
           confettiRef.current.stop();
-        }, 3500);
+          navigation.navigate('Dashboard');
+        }, 1500);
+      }
+      else
+      {
+        setTimeout(() => {
+          navigation.navigate('Dashboard');
+        }, 2000);
       }
     });
-  }, [scaleValue, opacityValue, springValue, success]);
+  }, [scaleValue, opacityValue, springValue, success, navigation]);
 
   return (
     <Animated.View style={{ ...styles.container, transform: [{ scale: scaleValue }], opacity: opacityValue }}>
@@ -62,29 +69,11 @@ const OrderStatus = ({ route }) => {
           />
           <FontAwesome name="check-circle" size={150} color="green" style={styles.icon} />
           <Text style={styles.successText}>Payment Successful!</Text>
-          <Animated.View
-            style={{
-              transform: [{ scale: springValue }],
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Dashboard')}
-              style={styles.successButton}
-            >
-              <Text style={styles.buttonText}>Go to Dashboard</Text>
-            </TouchableOpacity>
-          </Animated.View>
         </>
       ) : (
         <>
           <FontAwesome name="times-circle" size={150} color="red" style={styles.icon} />
           <Text style={styles.failureText}>Payment Failed!</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Dashboard')}
-            style={styles.failureButton}
-          >
-            <Text style={styles.buttonText}>Go Back</Text>
-          </TouchableOpacity>
         </>
       )}
     </Animated.View>
@@ -113,25 +102,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     color: 'red',
-  },
-  successButton: {
-    backgroundColor: 'blue',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  failureButton: {
-    backgroundColor: 'red',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
   },
 });
 
